@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\DTOs\" />
+    <Folder Include="Application\Models\Responses\" />
     <Folder Include="Infrastructure\Data\Migrations\" />
   </ItemGroup>
 

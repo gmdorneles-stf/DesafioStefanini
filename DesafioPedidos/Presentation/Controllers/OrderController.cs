@@ -1,4 +1,5 @@
 ﻿using DesafioPedidos.Application.Interfaces;
+using DesafioPedidos.Application.Models.Requests;
 using DesafioPedidos.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,13 +34,13 @@ namespace DesafioPedidos.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddOrder([FromBody] Order order)
+        public async Task<IActionResult> AddOrder([FromBody] PostOrderRequest order)
         {
             if (order == null)
                 return BadRequest();
 
             await _orderService.AddOrderAsync(order);
-            return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
+            return Ok();
         }
 
         [HttpPut("{id}")]

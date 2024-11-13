@@ -1,4 +1,5 @@
-﻿using DesafioPedidos.Domain.Entities;
+﻿using DesafioPedidos.Application.Models.Requests;
+using DesafioPedidos.Domain.Entities;
 
 namespace DesafioPedidos.Application.Interfaces
 {
@@ -6,7 +7,7 @@ namespace DesafioPedidos.Application.Interfaces
     {
         Task<Order> GetOrderByIdAsync(int id);
         Task<IEnumerable<Order>> GetAllOrdersAsync();
-        Task AddOrderAsync(Order order);
+        Task AddOrderAsync(PostOrderRequest order);
         Task UpdateOrderAsync(Order order);
         Task DeleteOrderAsync(int id);
 

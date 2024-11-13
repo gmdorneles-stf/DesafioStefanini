@@ -1,4 +1,5 @@
 ﻿using DesafioPedidos.Application.Interfaces;
+using DesafioPedidos.Application.Models.Requests;
 using DesafioPedidos.Domain.Entities;
 using DesafioPedidos.Infrastructure.Data.Interfaces;
 
@@ -8,11 +9,13 @@ namespace DesafioPedidos.Application.Services
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderItemRepository _orderItemRepository;
+        private readonly IProductService _productService;
 
-        public OrderService(IOrderRepository orderRepository, IOrderItemRepository orderItemRepository)
+        public OrderService(IOrderRepository orderRepository, IOrderItemRepository orderItemRepository, IProductService productService)
         {
             _orderRepository = orderRepository;
             _orderItemRepository = orderItemRepository;
+            _productService = productService;
         }
 
         public async Task<Order> GetOrderByIdAsync(int id)
@@ -25,8 +28,27 @@ namespace DesafioPedidos.Application.Services
             return await _orderRepository.GetAllAsync();
         }
 
-        public async Task AddOrderAsync(Order order)
+        public async Task AddOrderAsync(PostOrderRequest request)
         {
+            var products = await _productService.GetAllProductsAsync();
+
+            if (!request.Products.All(req => products.Any(p => p.Id == req.ProductId)))
+            {
+                throw new Exception("Product Not Found");
+            }
+
+            var order = new Order
+            {
+                CustomerName = request.CustomerName,
+                CustomerEmail = request.CustomerEmail,
+                OrderItems = request.Products.Select(item => new OrderItem
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    Product = products.FirstOrDefault(p => p.Id == item.ProductId)
+                }).ToList()
+            };
+
             await _orderRepository.AddAsync(order);
             await _orderRepository.SaveChangesAsync();
         }
